@@ -145,56 +145,6 @@ class ActivityScheduler(ISchedulerService):
                 pass
         app_logger.info("活动调度器已停止")
     
-    # async def _scheduler_loop(self) -> None:
-    #     """调度循环"""
-    #     activities = await self.repository.get_all_activities()
-    #     for activity in activities:
-    #         try:
-    #             if activity.should_start():
-    #                 activity.status = ActivityStatus.ACTIVE.value
-    #                 await self.repository.set_activity_status(activity.id, ActivityStatus.ACTIVE.value)
-    #                 if activity.scope.startswith("-100") and activity.checked==0:
-    #                     await self.notification_service.send_activity_start_notification(
-    #                         activity, activity.scope
-    #                     )
-    #                 elif not activity.scope.startswith("-100") and activity.checked==0:
-    #                     groups = await self.repository.get_groups_by_tag(activity.scope, activity.sys_user_id)
-    #                     for group in groups:
-    #                         await self.notification_service.send_activity_start_notification(
-    #                             activity, group["group_id"]
-    #                         )
-    #                 app_logger.info(f"活动已开始 activity: {activity} 范围scope： {activity.scope}")
-    #                 await self.repository.update_activity_checked(activity.id, 1)
-    #             elif activity.should_end():
-    #                 # if int((activity.end_time - activity.start_time).seconds) < 1800: # 活动时间小于半小时直接结束验证，不做结束半小时前检查
-    #                 # 检查所有用户验证条件
-    #                 lottery_bot = await LotteryBot.get_lottery_bot(activity.sys_user_id)
-    #                 bot = Bot(lottery_bot["token"])
-    #                 for user in activity.activity_users:
-    #                     result = await self.validator.validate_user_conditions(self.repository, user.user_id, activity.id, bot, activity.sys_user_id)
-                        
-    #                 finish_condition_users = [user for user in activity.activity_users if user.condition_status]
-    #                 await self.prizes_choice.random_choice_prizer(self.repository, activity.prices, finish_condition_users)
-    #                 activity.status = ActivityStatus.ENDED.value
-    #                 await self.repository.set_activity_status(activity.id, ActivityStatus.ENDED.value)
-    #                 if activity.scope.startswith("-100") and activity.checked!=0:
-    #                     await self.notification_service.send_activity_end_notification(
-    #                         activity, activity.scope, self.repository
-    #                     )
-    #                 elif not activity.scope.startswith("-100") and activity.checked!=0:
-    #                     groups = await self.repository.get_groups_by_tag(activity.scope, activity.sys_user_id)
-    #                     for group in groups:
-    #                         await self.notification_service.send_activity_end_notification(
-    #                             activity, group["group_id"], self.repository
-    #                         )
-    #                 app_logger.info(f"活动已结束 {activity}  范围scope： {activity.scope}")
-    #             elif activity.should_check():
-    #                 lottery_bot = await LotteryBot.get_lottery_bot(activity.sys_user_id)
-    #                 bot = Bot(lottery_bot["token"])
-    #                 for user in activity.activity_users:
-    #                     result = await self.validator.validate_user_conditions(self.repository, user.user_id, activity.id, bot, activity.sys_user_id)
-    #         except Exception as e:
-    #             app_logger.error(f"调度器执行出错: {e}", exc_info=True)
                 
     async def _scheduler_loop(self) -> None:
         """调度循环"""
